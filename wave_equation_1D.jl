@@ -3,6 +3,7 @@ using SparseArrays
 using Plots
 using DifferentialEquations
 using BenchmarkTools
+using Printf
 
 g = 9.80665 # [m/s^2]
 H = 0.1 # [m]
@@ -64,7 +65,8 @@ pyplot()
 animation = @animate for i in 1:Nt+1
     # surface(x, t[1:i], u_plot[:, 1:i]', xlabel="Position (x)", ylabel="Time (t)", zlabel="Solution", title="Δt = $Δt Δx = $Δx")
     t_current = t[i]
-    plot(x, u_plot[:, i], xlabel="Position (x)", ylabel="Solution", title="Time: $t_current", ylims=(-1.5, 1.5))
+    formatted_t = @sprintf("%.3f", t_current)
+    plot(x, u_plot[:, i], xlabel="Position (x)", ylabel="Solution", title="Time: $formatted_t", ylims=(-1.5, 1.5))
 end
 
 # Save the animation
