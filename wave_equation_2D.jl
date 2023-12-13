@@ -43,7 +43,7 @@ end
 
 function Laplacian_x(Nₓ, Ny)    # Ax
     matrix_size = (Nₓ-1)*(Ny-1)
-    k = [1.0 for i in 1:matrix_size-1]
+    k = [1.0 for i in 1:matrix_size-1]                             # k=1 and k=-1 diagonal array
     return Array(Tridiagonal(k, [-2.0 for i in 1:matrix_size], k)) # excluding 1/Δx^2
 end
 
@@ -73,10 +73,10 @@ Ay = Laplacian_y(Nₓ, Ny)
 u⁰ = (π/Lₓ).*cos.(π .* x / Lₓ)                 # dζ/dx at t = tStart
 v⁰ = (π/Ly).*cos.(π .* y / Ly)                 # dζ/dy at t = tStart
 ζ⁰_xy = zeros((Nₓ-1)*(Ny-1), 1)                # dζ/dxdy at t = tStart   
-# ζ⁰ = sin.(π .* x / Lₓ)
-# u⁰ = zeros((Nₓ-1)*(Ny-1), 1)
-# v⁰ = zeros((Nₓ-1)*(Ny-1), 1)
-# ζ⁰_xy = zeros((Nₓ-1)*(Ny-1), 1)
+# ζ⁰ = sin.(π .* x / Lₓ)                       # ζ(x, y, t) at t = tStart so, ζ(x, y, 0)
+# u⁰ = zeros((Nₓ-1)*(Ny-1), 1)                 # dζ/dx at t = tStart
+# v⁰ = zeros((Nₓ-1)*(Ny-1), 1)                 # dζ/dy at t = tStart
+# ζ⁰_xy = zeros((Nₓ-1)*(Ny-1), 1)              # dζ/dxdy at t = tStart
 
 ζ⁰ = vec(ζ⁰')   # flatten the matrix to 1D
 u⁰ = vec(u⁰')   # flatten the matrix to 1D
