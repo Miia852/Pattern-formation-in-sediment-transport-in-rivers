@@ -41,7 +41,7 @@ A = Laplacian1D(Nx, Δx)
 u0 = sin.(π .* x / L)
 du0 = (π/L).*cos.(π .* x / L)
 # du0 = zeros(Nx-1, 1)
-u1 = u0 .+ du0 .* Δt .+ (0.5*r^2) .* (A*u0)
+u1 = u0 .+ du0 .* Δt .+ (0.5*(r/c)^2) .* (A*u0)
 
 u_plot = zeros(Nx - 1, Nt + 1)
 u_plot[:, 1] = u0
