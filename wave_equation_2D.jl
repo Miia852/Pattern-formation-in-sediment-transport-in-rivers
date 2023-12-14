@@ -69,20 +69,27 @@ Aₓ = Laplacian_x(Nₓ, Ny)
 Ay = Laplacian_y(Nₓ, Ny)
 
 # Initial conditions
-ζ⁰ = sin.(π .* x / Lₓ) .+ sin.(π .* y / Ly)    # ζ(x, y, t) at t = tStart so, ζ(x, y, 0)
-u⁰ = (π/Lₓ).*cos.(π .* x / Lₓ)                 # dζ/dx at t = tStart
-v⁰ = (π/Ly).*cos.(π .* y / Ly)                 # dζ/dy at t = tStart
-ζ⁰_xy = zeros((Nₓ-1)*(Ny-1), 1)                # dζ/dxdy at t = tStart   
-# ζ⁰ = sin.(π .* x / Lₓ)                       # ζ(x, y, t) at t = tStart so, ζ(x, y, 0)
-# u⁰ = zeros((Nₓ-1)*(Ny-1), 1)                 # dζ/dx at t = tStart
-# v⁰ = zeros((Nₓ-1)*(Ny-1), 1)                 # dζ/dy at t = tStart
-# ζ⁰_xy = zeros((Nₓ-1)*(Ny-1), 1)              # dζ/dxdy at t = tStart
+# ζ⁰ = sin.(π .* x ./ Lₓ) .+ sin.(π .* y ./ Ly)    # ζ(x, y, t) at t = tStart so, ζ(x, y, 0)
+# u⁰ = (π/Lₓ).*cos.(π .* x ./ Lₓ)                  # dζ/dx at t = tStart
+# v⁰ = (π/Ly).*cos.(π .* y ./ Ly)                  # dζ/dy at t = tStart
+# ζ⁰_xy = zeros((Nₓ-1)*(Ny-1), 1)                  # dζ/dxdy at t = tStart   
 
-ζ⁰ = vec(ζ⁰')   # flatten the matrix to 1D
-u⁰ = vec(u⁰')   # flatten the matrix to 1D
-v⁰ = vec(v⁰')   # flatten the matrix to 1D
+# ζ⁰ = sin.(π .* x ./ Lₓ)                       # ζ(x, y, t) at t = tStart so, ζ(x, y, 0)
+# ζ⁰ = sin.(π .* y ./ Ly)                       # ζ(x, y, t) at t = tStart so, ζ(x, y, 0)
+# u⁰ = zeros((Nₓ-1)*(Ny-1), 1)               
+# v⁰ = zeros((Nₓ-1)*(Ny-1), 1)               
 
-ζ¹ = ζ⁰ .+ u⁰ .* Δt .+ v⁰ .* Δt .+ 0.5 * ((rx/c)^2 .* (Aₓ*ζ⁰) + (ry/c)^2 .* (Ay*ζ⁰)) .+ ζ⁰_xy * Δt^2  
+ζ⁰ = sin.(π .* x ./ Lₓ) .* sin.(π .* y ./ Ly)    # ζ(x, y, t) at t = tStart so, ζ(x, y, 0)
+u⁰ = (π/Lₓ).*cos.(π .* x ./ Lₓ) .* sin.(π .* y ./ Ly)   # dζ/dx at t = tStart
+v⁰ = sin.(π .* x ./ Lₓ) .* (π/Ly) .* cos.(π .* y ./ Ly) # dζ/dy at t = tStart
+ζ⁰_xy = (π/Lₓ).*cos.(π .* x ./ Lₓ) .* (π/Ly) .* cos.(π .* y ./ Ly) # dζ/dxdy at t = tStart   
+
+ζ⁰ = vec(ζ⁰')         # flatten the matrix to 1D
+u⁰ = vec(u⁰')         # flatten the matrix to 1D
+v⁰ = vec(v⁰')         # flatten the matrix to 1D
+ζ⁰_xy = vec(ζ⁰_xy')   # flatten the matrix to 1D
+
+ζ¹ = ζ⁰ .+ u⁰ .* Δt .+ v⁰ .* Δt .+ 0.5 * ((rx / c)^2 .* (Aₓ * ζ⁰) + (ry / c)^2 .* (Ay * ζ⁰)) .+ ζ⁰_xy .* Δt^2  
 
 ζₚ = zeros((Nₓ - 1)*(Ny - 1), Nₜ + 1)   # zeta_plot
 ζₚ[:, 1] = ζ⁰
@@ -103,20 +110,20 @@ for i in range(2, Nₜ) # from 2 to Nₜ (including)
     # ζⁿ⁺¹ and ζⁿ of the current step are ζⁿ and ζⁿ⁻¹ of the next step, respectively
 end
 
-# plotly()
-# surface(x, y, reshape(ζₚ[:, end], Ny-1, Nₓ-1), xlabel="Position (x)", ylabel="Position (y)", zlabel="Solution (ζ)", title="Δt = $Δt Δx = $Δx Δy = $Δy")
-# surface(x, y, reshape(ζ⁰, Ny-1, Nₓ-1), xlabel="x", ylabel="y", zlabel="ζ", title="Δt = $Δt Δx = $Δx Δy = $Δy")
-
 # Get the range of ζ values across all frames
 ζ_range = extrema(ζₚ)
+
+# plotly()
+# # surface(x, y, reshape(ζₚ[:, end], Nₓ-1, Ny-1)', xlabel="Position (x)", ylabel="Position (y)", zlabel="Solution (ζ)", title="Δt = $Δt Δx = $Δx Δy = $Δy")
+# surface(x, y, reshape(ζₚ[:, 1], Nₓ-1, Ny-1)', xlabel="x", ylabel="y", zlabel="ζ", title="Δt = $Δt Δx = $Δx Δy = $Δy", xlims = (LeftX, RightX), ylims = (LeftY, RightY), zlims = ζ_range, clim = ζ_range)
 
 pyplot()
 animation = @animate for i in 1:Nₜ+1
     formatted_t = @sprintf("%.3f", t[i])    # always use 3 decimal points
-    ζ = reshape(ζₚ[:, i], Ny-1, Nₓ-1)       # convert 1D array to 2D matrix
+    ζ = reshape(ζₚ[:, i], Nₓ-1, Ny-1)'       # convert 1D array to 2D matrix
 
     surface(x, y, ζ, xlabel = "x", ylabel = "y", zlabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = (LeftY, RightY), zlims = ζ_range, clim = ζ_range)    
 end
 
 # Save the animation
-gif(animation, "wave_equation_2D.gif", fps = 15)
+gif(animation, "animations/wave_equation_2D_sin(pix_Lx)tsin(piy_Ly)_zetadx_zetady_0.gif", fps = 15)
