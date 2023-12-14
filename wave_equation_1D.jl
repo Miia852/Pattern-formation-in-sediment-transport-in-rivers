@@ -42,10 +42,16 @@ A = Laplacian1D(Nx, Δx)
 
 # Initial conditions
 ζ⁰ = sin.(π .* x / L)           # ζ(x, t) at t = tStart so, ζ(x, t)
-# u⁰ = (π/L).*cos.(π .* x / L)    # dζ/dx at t = tStart
-u⁰ = zeros(Nx-1, 1)             # dζ/dx at t = tStart
+u⁰ = (π/L).*cos.(π .* x / L)    # dζ/dx at t = tStart
 
-ζ¹ = ζ⁰ .+ u⁰ .* Δt .+ (0.5*(r/c)^2) .* (A*ζ⁰) # r/c = Δt/Δx => (0.5*(Δt/Δx)^2) .* (A*u)
+# ζ⁰ = zeros(Nx-1, 1)
+# u⁰ = zeros(Nx-1, 1)             # dζ/dx at t = tStart
+# ζ⁰[49] = 0.1                    # to form a triangle
+# ζ⁰[50] = 0.2                    # to form a triangle
+# ζ⁰[51] = 0.1                    # to form a triangle
+
+# ζ¹ = ζ⁰ .+ u⁰ .* Δt .+ (0.5*(r/c)^2) .* (A*ζ⁰) # r/c = Δt/Δx => (0.5*(Δt/Δx)^2) .* (A*u)
+ζ¹ = zeros(Nx-1, 1)
 
 ζₚ = zeros(Nx - 1, Nt + 1)  # zeta_plot
 ζₚ[:, 1] = ζ⁰
@@ -76,8 +82,8 @@ pyplot()
 animation = @animate for i in 1:Nt+1
     formatted_t = @sprintf("%.3f", t[i])
     
-    surface(x, t[1:i], ζₚ[:, 1:i]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
-    # plot(x, ζₚ[:, i], xlabel = "x", ylabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = ζ_range)
+    # surface(x, t[1:i], ζₚ[:, 1:i]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
+    plot(x, ζₚ[:, i], xlabel = "x", ylabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = ζ_range)
 end
 
 # animation = @animate for i in 1:Nx-1
@@ -88,7 +94,7 @@ end
 # end
 
 # Save the animation
-gif(animation, "wave_equation_1D.gif", fps = 15)
+gif(animation, "animations/wave_equation_1D_sin(pix_L)_zetadx.gif", fps = 15)
 
 
 ### Using DifferentialEquations.jl ###
