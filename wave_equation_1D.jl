@@ -50,8 +50,7 @@ u⁰ = (π/L).*cos.(π .* x / L)    # dζ/dx at t = tStart
 # ζ⁰[50] = 0.2                    # to form a triangle
 # ζ⁰[51] = 0.1                    # to form a triangle
 
-# ζ¹ = ζ⁰ .+ u⁰ .* Δt .+ (0.5*(r/c)^2) .* (A*ζ⁰) # r/c = Δt/Δx => (0.5*(Δt/Δx)^2) .* (A*u)
-ζ¹ = zeros(Nx-1, 1)
+ζ¹ = ζ⁰ .+ u⁰ .* Δt .+ (0.5*(r/c)^2) .* (A*ζ⁰) # r/c = Δt/Δx => (0.5*(Δt/Δx)^2) .* (A*u)
 
 ζₚ = zeros(Nx - 1, Nt + 1)  # zeta_plot
 ζₚ[:, 1] = ζ⁰
