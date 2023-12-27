@@ -14,7 +14,7 @@ tEnd = 1
 
 T = tEnd - tStart   # Simulation time
 L = RightX - LeftX  # Domain length
-c = 2*sqrt(g*H)     # wave propagation speed
+c = sqrt(g*H)     # wave propagation speed
 Δt = 1/200          # time step
 Δx = 1/100          # spatial spacing
 r = c*(Δt/Δx)       # Courant number
@@ -31,12 +31,12 @@ function Laplacian1D(Nx, hx)    # A
     A[1, 1:end] .= 0
     A[end, 1:end] .= 0
 
-    A[1, 1] = hx^2
-    A[1, end] = -hx^2
-    A[end, 1] = -hx
-    A[end, 2] = hx
-    A[end, end-1] = -hx
-    A[end, end] = hx
+    # A[1, 1] = hx^2
+    # A[1, end] = -hx^2
+    # A[end, 1] = -hx
+    # A[end, 2] = hx
+    # A[end, end-1] = -hx
+    # A[end, end] = hx
 
     return A
 end
@@ -59,14 +59,14 @@ A = Laplacian1D(Nx, Δx)
 
 # Initial conditions
 ζ⁰ = sin.(π .* x / L)            # ζ(x, t) at t = tStart
-u⁰ = (π/L).*cos.(π .* x / L)     # dζ/dt at t = tStart
+# u⁰ = (π/L).*cos.(π .* x / L)     # dζ/dt at t = tStart
 
 # # Impose BCs on ζ⁰
 # ζ⁰[1] = 0
 # ζ⁰[end] = 0
 
 # ζ⁰ = zeros(Nx+1, 1)      # ζ(x, t) at t = tStart
-# u⁰ = zeros(Nx+1, 1)      # dζ/dt at t = tStart
+u⁰ = zeros(Nx+1, 1)      # dζ/dt at t = tStart
 # ζ⁰[50] = 0.1                    # to form a triangle
 # ζ⁰[51] = 0.2                    # to form a triangle
 # ζ⁰[52] = 0.1                    # to form a triangle
@@ -100,26 +100,26 @@ end
 # Get the range of ζ values across all frames
 ζ_range = extrema(ζₚ)
 
-# plotly()
-# surface(x, t, ζₚ', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Δt = $Δt Δx = $Δx", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
+plotly()
+surface(x, t, ζₚ', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Δt = $Δt Δx = $Δx", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
 
-pyplot()
-animation = @animate for i in 1:Nt+1
-    formatted_t = @sprintf("%.3f", t[i])
+# pyplot()
+# animation = @animate for i in 1:Nt+1
+#     formatted_t = @sprintf("%.3f", t[i])
     
-    # surface(x, t[1:i], ζₚ[:, 1:i]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
-    plot(x, ζₚ[:, i], xlabel = "x", ylabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = ζ_range)
-end
-
-# animation = @animate for i in 1:Nx-1
-#     formatted_x = @sprintf("%.3f", x[i])
-
-#     surface(x[1:i], t, ζₚ[1:i, :]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "x: $formatted_x", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
-#     # plot(t, ζₚ[i, :], xlabel = "t", ylabel = "ζ", title = "x: $formatted_x", xlims = (tStart, tEnd), ylims = ζ_range)
+#     # surface(x, t[1:i], ζₚ[:, 1:i]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
+#     plot(x, ζₚ[:, i], xlabel = "x", ylabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = ζ_range)
 # end
 
-# Save the animation
-gif(animation, "animations/wave_equation_1D_sin(pix_L)_zetadx.gif", fps = 15)
+# # animation = @animate for i in 1:Nx-1
+# #     formatted_x = @sprintf("%.3f", x[i])
+
+# #     surface(x[1:i], t, ζₚ[1:i, :]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "x: $formatted_x", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
+# #     # plot(t, ζₚ[i, :], xlabel = "t", ylabel = "ζ", title = "x: $formatted_x", xlims = (tStart, tEnd), ylims = ζ_range)
+# # end
+
+# # Save the animation
+# gif(animation, "animations/wave_equation_1D_sin(pix_L)_zetadx.gif", fps = 15)
 
 
 ### Using DifferentialEquations.jl ###
