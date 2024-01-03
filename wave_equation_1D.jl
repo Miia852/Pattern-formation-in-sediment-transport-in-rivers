@@ -107,26 +107,26 @@ end
 # df = DataFrame(ζₚ', :auto)
 # CSV.write("wave_1D_numerical_solution.csv", df)
 
-plotly()
-surface(x, t, ζₚ', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Δt = $Δt Δx = $Δx", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
+# plotly()
+# surface(x, t, ζₚ', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Δt = $Δt Δx = $Δx", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
 
-# pyplot()
-# animation = @animate for i in 1:Nt+1
-#     formatted_t = @sprintf("%.3f", t[i])
+pyplot()
+animation = @animate for i in 1:Nt+1
+    formatted_t = @sprintf("%.3f", t[i])
     
-#     # surface(x, t[1:i], ζₚ[:, 1:i]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
-#     plot(x, ζₚ[:, i], xlabel = "x", ylabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = ζ_range)
+    # surface(x, t[1:i], ζₚ[:, 1:i]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
+    plot(x, ζₚ[:, i], xlabel = "x", ylabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = ζ_range)
+end
+
+# animation = @animate for i in 1:Nx-1
+#     formatted_x = @sprintf("%.3f", x[i])
+
+#     surface(x[1:i], t, ζₚ[1:i, :]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "x: $formatted_x", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
+#     # plot(t, ζₚ[i, :], xlabel = "t", ylabel = "ζ", title = "x: $formatted_x", xlims = (tStart, tEnd), ylims = ζ_range)
 # end
 
-# # animation = @animate for i in 1:Nx-1
-# #     formatted_x = @sprintf("%.3f", x[i])
-
-# #     surface(x[1:i], t, ζₚ[1:i, :]', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "x: $formatted_x", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
-# #     # plot(t, ζₚ[i, :], xlabel = "t", ylabel = "ζ", title = "x: $formatted_x", xlims = (tStart, tEnd), ylims = ζ_range)
-# # end
-
-# # Save the animation
-# gif(animation, "animations/wave_equation_1D_sin(pix_L)_zetadx.gif", fps = 15)
+# Save the animation
+gif(animation, "animations/wave_equation_1D_periodic.gif", fps = 15)
 
 
 ### Using DifferentialEquations.jl ###
