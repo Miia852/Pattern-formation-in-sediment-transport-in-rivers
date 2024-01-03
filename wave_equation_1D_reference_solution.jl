@@ -28,5 +28,9 @@ end
 # Get the range of ζ values across all frames
 ζ_range = extrema(ζₚ)
 
+# using DataFrames, CSV
+# df = DataFrame(ζₚ', :auto)
+# CSV.write("wave_1D_reference_solution.csv", df)
+
 plotly()
 surface(x, t, ζₚ', xlabel = "x", ylabel = "t", zlabel = "ζ", title = "Δt = $Δt Δx = $Δx", xlims = (LeftX, RightX), ylims = (tStart, tEnd), zlims = ζ_range, clim = ζ_range)
