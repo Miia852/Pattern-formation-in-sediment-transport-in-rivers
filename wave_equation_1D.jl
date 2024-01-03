@@ -28,8 +28,11 @@ function Laplacian1D(Nx, hx)    # A
     k = [1.0 for i in 1:Nx]                                # k=1 and k=-1 diagonal array
     A = Array(Tridiagonal(k, [-2.0 for i in 1:Nx+1], k))   # including 1/Δx^2
     
-    A[1, 1:end] .= 0
-    A[end, 1:end] .= 0
+    # A[1, 1:end] .= 0
+    # A[end, 1:end] .= 0
+
+    A[1, end] = 1
+    A[end, 1] = 1
 
     # A[1, 1] = hx^2
     # A[1, end] = -hx^2
