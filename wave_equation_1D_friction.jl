@@ -75,8 +75,14 @@ animation = @animate for i in 1:length(t_values)
     plot(x, u_k, ylims=(0, 1), title="Time: $formatted_t")
 end
 
-gif(animation, "animation.gif", fps = 15)
+gif(animation, "animations/wave_equation_1D_friction.gif", fps = 15)
 
 Δt_array = collect(solution.t[i+1]-solution.t[i] for i in 1:length(solution.t)-1)
+
 println("Mean time step size: ", mean(Δt_array))
-bar(Δt_array, yaxis="dt", title="Time step size")
+# p = scatter(1:length(t_values), Δt_array, xaxis = "Step number", yaxis = "Δt", title = "Time Step Size", markersize = 2)
+p1 = plot(1:length(t_values), Δt_array, xaxis = "Step number", yaxis = "Δt", title = "Time Step Size", marker = :circle, markersize = 2, markercolor = :blue, markerstrokecolor = :blue, seriescolor = :blue, legend = false)
+p2 = bar(Δt_array, xaxis = "Step number", yaxis = "Δt", title = "Time Step Size", legend = false)
+
+savefig(p1, "time_steps_line.png")
+savefig(p2, "time_steps_bar.png")
