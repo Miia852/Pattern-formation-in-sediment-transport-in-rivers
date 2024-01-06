@@ -61,9 +61,10 @@ println("Courant number: ", r)
 A = Laplacian1D(Nx, Δx)
 
 # Initial conditions
-ζ⁰ = sin.(π .* x / L)            # ζ(x, t) at t = tStart
+# ζ⁰ = sin.(π .* x / L)            # ζ(x, t) at t = tStart
 # u⁰ = (π/L).*cos.(π .* x / L)     # dζ/dt at t = tStart
 
+ζ⁰ = exp.(-((x .- 0.5*L) / 0.1).^2)  # Gaussian wave packet
 # # Impose BCs on ζ⁰
 # ζ⁰[1] = 0
 # ζ⁰[end] = 0
@@ -126,7 +127,7 @@ end
 # end
 
 # Save the animation
-gif(animation, "animations/wave_equation_1D_periodic.gif", fps = 15)
+gif(animation, "animations/wave_equation_1D_gaussian.gif", fps = 15)
 
 
 ### Using DifferentialEquations.jl ###
