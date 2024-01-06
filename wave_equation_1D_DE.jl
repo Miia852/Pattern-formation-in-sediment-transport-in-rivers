@@ -17,15 +17,15 @@ L = RightX - LeftX  # Domain length
 c = sqrt(g*H)       # wave propagation speed
 Δt = 1/200          # time step
 Δx = 1/100          # spatial spacing
-r = c*(Δt/Δx)       # Courant number
+r = c/Δx            # Courant number adjusted
 Nt = Int64(T/Δt)    # number of sub-intervals in time domain
 Nx = Int64(L/Δx)    # number of sub-intervals in space domain
 
 x = [j for j in LeftX:Δx:RightX]   # include boundary points
 
-function Laplacian1D(Nx, hx)    # A
+function Laplacian1D(Nx, hx)                               # A
     k = [1.0 for i in 1:Nx]                                # k=1 and k=-1 diagonal array
-    A = Array(Tridiagonal(k, [-2.0 for i in 1:Nx+1], k))   # including 1/Δx^2
+    A = Array(Tridiagonal(k, [-2.0 for i in 1:Nx+1], k))   # excluding 1/Δx^2
     
     # A[1, 1:end] .= 0
     # A[end, 1:end] .= 0
@@ -37,7 +37,7 @@ function Laplacian1D(Nx, hx)    # A
 end
 
 println("Wave propagation speed: ", c)
-println("Courant number: ", r)
+println("Courant number: ", r*Δt)
 
 A = Laplacian1D(Nx, Δx)
 
@@ -51,23 +51,17 @@ function RHS!(ddu, du, u, p, t)
 end
 
 problem = SecondOrderODEProblem(RHS!, u⁰, ζ⁰, tspan)
-# solution = solve(problem, Euler(), dt = Δt, save_everystep=false)
-solution = solve(problem, Euler(), dt = Δt, save_everystep=true)
-# solution = solve(problem, Tsit5(), save_everystep=false)
-# solution = solve(problem, save_everystep=false)
+solution = solve(problem, Tsit5())
 
-# solutions = solution.u[end]
-# duEnd = solutions[1:Nx+1]
-# uEnd = solutions[Nx+2:end]
-
-# plot(x, uEnd)
+t_values = solution.t
+println("Number of nodes in time: ", length(t_values))
 
 pyplot()
-animation = @animate for i in 1:Nt+1
+animation = @animate for i in 1:length(t_values)
     formatted_t = @sprintf("%.3f", solution.t[i])
     
     plot(x, solution.u[i][Nx+2:end], xlabel = "x", ylabel = "ζ", title = "Time: $formatted_t", xlims = (LeftX, RightX), ylims = (0, 1))
 end
 
 # Save the animation
-gif(animation, "test.gif", fps = 15)
+gif(animation, "animations/wave_equation_1D_periodic_DE.gif", fps = 15)
