@@ -47,7 +47,7 @@ u⁰ = zeros(Nx+1, 1)      # dζ/dt at t = tStart
 tspan = (tStart, tEnd)
 
 function RHS!(ddu, du, u, p, t)
-    ddu .= -r .* (A*u)
+    ddu .= (r*r) .* (A*u)
 end
 
 problem = SecondOrderODEProblem(RHS!, u⁰, ζ⁰, tspan)
