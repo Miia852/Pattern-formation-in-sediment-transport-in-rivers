@@ -90,12 +90,25 @@ du0 = u0
 tspan = (tStart, tEnd)
 
 problem = SecondOrderODEProblem(RHS, du0, u0, tspan)
-solution = solve(problem, save_everystep=false)
+solution = solve(problem, save_everystep=true)
 
-solutions = solution.u[end]
-duEnd = solutions[1:((Nx-1)*(Ny-1))]
-uEnd = solutions[((Nx-1)*(Ny-1)+1):end]
+# solutions = solution.u[end]
+# duEnd = solutions[1:((Nx-1)*(Ny-1))]
+# uEnd = solutions[((Nx-1)*(Ny-1)+1):end]
 
-duEnd1 = reshape(duEnd, Nx-1, Ny-1)'
-uEnd1 = reshape(uEnd, Nx-1, Ny-1)'
-heatmap(x_points, y_points, uEnd1, xlim=(LeftX, RightX), ylim=(LeftY, RightY), origin=:lower, c=:viridis, xlabel="X", ylabel="Y", title="uEnd Nx=$Nx Ny=$Ny", colorbar=true)
+# duEnd1 = reshape(duEnd, Nx-1, Ny-1)'
+# uEnd1 = reshape(uEnd, Nx-1, Ny-1)'
+# heatmap(x_points, y_points, uEnd1, xlim=(LeftX, RightX), ylim=(LeftY, RightY), origin=:lower, c=:viridis, xlabel="X", ylabel="Y", title="uEnd Nx=$Nx Ny=$Ny", colorbar=true)
+
+pyplot()
+animation = @animate for i in range(1, size(solution.t)[1])
+    formatted_t = @sprintf("%.3f", solution.t[i])
+    u_plot = solution.u[i][((Nx-1)*(Ny-1)+1):end]
+    u_plot = reshape(u_plot, Nx-1, Ny-1)'
+
+    heatmap(x_points, y_points, u_plot, xlim=(LeftX, RightX), ylim=(LeftY, RightY), origin=:lower, c=:viridis, xlabel="X", ylabel="Y", title="uEnd Nx=$Nx Ny=$Ny", colorbar=true)
+
+end
+
+# Save the animation
+gif(animation, "test.gif", fps = 15)
