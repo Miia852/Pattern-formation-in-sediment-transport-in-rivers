@@ -13,7 +13,7 @@ function setup()
     end
     
     # List of packages to add
-    packages_to_add = ["LinearAlgebra", "SparseArrays", "Plots", "DifferentialEquations", "BenchmarkTools", "Printf"]
+    packages_to_add = ["LinearAlgebra", "SparseArrays", "Plots", "DifferentialEquations", "BenchmarkTools", "Printf", "Statistics"]
     
     # Add packages
     for pkg in packages_to_add
@@ -31,6 +31,7 @@ using Plots
 using DifferentialEquations
 using BenchmarkTools
 using Printf
+using Statistics
 
 ## general parameters
 g = 9.80665 # [m/s^2]
@@ -77,5 +78,5 @@ function waveEquationNonlinear()
 end
 
 # simplestModel()
-waveEquationFriction()
+# waveEquationFriction()
 waveEquationNonlinear()
