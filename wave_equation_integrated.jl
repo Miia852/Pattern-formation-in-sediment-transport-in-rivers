@@ -83,26 +83,3 @@ end
 # simplestModel()
 # waveEquationFriction()
 # waveEquationNonlinear()
-
-
-using InteractiveUtils
-function check_type_stability(file_path::AbstractString)
-    include(file_path)
-
-    functions = names(Main)
-
-    for func_name in functions
-        if isa(getfield(Main, func_name), Function)
-            code_warntype_result = @code_warntype Main.eval(Expr(:call, Symbol(func_name)))
-
-            println("\nChecking type stability for function: $func_name")
-            display(code_warntype_result)
-        end
-    end
-    println("Stability checking finished.")
-    println("--------------------------------------------------------")
-end
-
-file_path = joinpath(@__DIR__, "solvers", "wave_equation_1D_friction_nonlinear_tidal.jl")
-check_type_stability(file_path)
-
