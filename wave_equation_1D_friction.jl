@@ -6,37 +6,31 @@ using Statistics
 using BenchmarkTools
 using Printf
 
-g = 9.80665 # [m/s^2]
-H = 0.1 # [m]
+g = 9.80665     # [m/s²]
+H = 0.1         # [m]
 LeftX = 0
 RightX = 1
 tStart = 0
 tEnd = 1
 
-T = tEnd - tStart   # Simulation time
 L = RightX - LeftX  # Domain length
 c = sqrt(g*H)       # wave propagation speed
 Δt = 1/200          # time step
 Δx = 1/100          # spatial spacing
 r = c/Δx            # Courant number adjusted
-Nt = Int64(T/Δt)    # number of sub-intervals in time domain
 Nx = Int64(L/Δx)    # number of sub-intervals in space domain
 μ = 0.5             # friction parameter
 
 x = [j for j in LeftX:Δx:RightX]   # include boundary points
 
-function Laplacian1D(Nx, hx)    # A
+function Laplacian1D(Nx, hx)                               # A
     k = [1.0 for i in 1:Nx]                                # k=1 and k=-1 diagonal array
     A = Array(Tridiagonal(k, [-2.0 for i in 1:Nx+1], k))   # excluding 1/Δx^2
-
-    # # A[1, 1:end] .= 0
-    # # A[end, 1:end] .= 0
 
     A[1, end] = 1
     A[end, 1] = 1
 
     return A
-
 end
 
 println("Wave propagation speed: ", c)
@@ -56,15 +50,7 @@ end
 
 problem = SecondOrderODEProblem(RHS!, u⁰, ζ⁰, tspan)
 
-# solution = solve(problem, Euler(), dt = Δt, save_everystep=true)
 solution = solve(problem, Tsit5())
-# solution = solve(problem, save_everystep=false)
-
-# solutions = solution.u[end]
-# duEnd = solutions[1:Nx+1]
-# uEnd = solutions[Nx+2:end]
-
-# plot(x, uEnd)
 
 t_values = solution.t
 println("Number of nodes in time: ", length(t_values))
@@ -90,20 +76,21 @@ end
 ζ_range = return_extrema(solution)
 
 animation = @animate for i in 1:length(t_values)
-    u_k = solution.u[i][Nx+2:end]
+    ζₚ = solution.u[i][Nx+2:end]
     formatted_t = @sprintf("%.8f", solution.t[i])
     
-    plot(x, u_k, ylims = ζ_range, title = "Time: $formatted_t")
+    plot(x, ζₚ, ylims = ζ_range, title = "Time: $formatted_t", legend = false)
 end
 
-gif(animation, "animations/wave_equation_1D_friction.gif", fps = 15)
+gif(animation, "animations/wave_equation_1D_friction.gif", fps = 15)
 
-Δt_array = collect(solution.t[i+1]-solution.t[i] for i in 1:length(solution.t)-1)
+Δt_array = collect(t_values[i+1]-t_values[i] for i in 1:length(t_values)-1)
 
 println("Mean time step size: ", mean(Δt_array))
-# p = scatter(1:length(t_values), Δt_array, xaxis = "Step number", yaxis = "Δt", title = "Time Step Size", marker = :circle, markersize = 2, markercolor = :blue, markerstrokecolor = :blue, seriescolor = :blue, legend = false)
-p1 = plot(1:length(t_values), Δt_array, xaxis = "Step number", yaxis = "Δt", title = "Time Step Size", marker = :circle, markersize = 2, markercolor = :blue, markerstrokecolor = :blue, seriescolor = :blue, legend = false)
+p = scatter(1:length(t_values)-1, Δt_array, xaxis = "Step number", yaxis = "Δt", title = "Time Step Size", marker = :circle, markersize = 2, markercolor = :blue, markerstrokecolor = :blue, seriescolor = :blue, legend = false)
+p1 = plot(1:length(t_values)-1, Δt_array, xaxis = "Step number", yaxis = "Δt", title = "Time Step Size", marker = :circle, markersize = 2, markercolor = :blue, markerstrokecolor = :blue, seriescolor = :blue, legend = false)
 p2 = bar(Δt_array, xaxis = "Step number", yaxis = "Δt", title = "Time Step Size", legend = false)
 
+savefig(p, "time_steps_scatter.png")
 savefig(p1, "time_steps_line.png")
 savefig(p2, "time_steps_bar.png")
