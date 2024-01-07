@@ -39,7 +39,7 @@ H = 0.1 # [m]
 LeftX = 0
 RightX = 1
 tStart = 0
-tEnd = 1
+tEnd = 500
 T = tEnd - tStart   # Simulation time
 L = RightX - LeftX  # Domain length
 c = sqrt(g*H)       # wave propagation speed
@@ -78,5 +78,7 @@ function waveEquationNonlinear()
 end
 
 # simplestModel()
-# waveEquationFriction()
+waveEquationFriction()
 waveEquationNonlinear()
+
+

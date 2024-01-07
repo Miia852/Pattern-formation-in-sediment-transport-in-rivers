@@ -26,10 +26,6 @@
 function Laplacian1D(Nx, hx)                               # A
     k = [1.0 for i in 1:Nx]                                # k=1 and k=-1 diagonal array
     A = Array(Tridiagonal(k, [-2.0 for i in 1:Nx+1], k))   # excluding 1/Δx^2
-    
-    # A[1, 1:end] .= 0
-    # A[end, 1:end] .= 0
-
     A[1, end] = 1
     A[end, 1] = 1
 
@@ -47,10 +43,12 @@ u⁰ = zeros(Nx+1, 1)      # dζ/dt at t = tStart
 tspan = (tStart, tEnd)
 
 function RHS!(ddu, du, u, p, t)
+    r, A = p
     ddu .= (r*r) .* (A*u)
 end
 
-problem = SecondOrderODEProblem(RHS!, u⁰, ζ⁰, tspan)
+p = (; r, A)
+problem = SecondOrderODEProblem(RHS!, u⁰, ζ⁰, tspan, p)
 solution = solve(problem, Tsit5())
 
 t_values = solution.t

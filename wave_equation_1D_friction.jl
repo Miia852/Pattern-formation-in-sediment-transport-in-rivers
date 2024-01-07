@@ -45,17 +45,19 @@ u⁰ = zeros(Nx+1, 1)      # dζ/dt at t = tStart
 tspan = (tStart, tEnd)
 
 function RHS!(ddu, du, u, p, t)
+    r, A, μ, H = p
     ddu .= r^2 * A * u .- (μ/H) .* du 
 end
 
-problem = SecondOrderODEProblem(RHS!, u⁰, ζ⁰, tspan)
+p = (; r, A, μ, H)
+problem = SecondOrderODEProblem(RHS!, u⁰, ζ⁰, tspan, p)
 
 solution = solve(problem, Tsit5())
 
 t_values = solution.t
 println("Number of nodes in time: ", length(t_values))
 
-function return_extrema(sol)
+function return_extrema(sol, Nx)
     sol_max = maximum(sol.u[1][Nx+2:end])
     sol_min = minimum(sol.u[1][Nx+2:end])
     
@@ -73,7 +75,7 @@ function return_extrema(sol)
     return (sol_min, sol_max)
 end
 
-ζ_range = return_extrema(solution)
+ζ_range = return_extrema(solution, Nx)
 
 animation = @animate for i in 1:length(t_values)
     ζₚ = solution.u[i][Nx+2:end]

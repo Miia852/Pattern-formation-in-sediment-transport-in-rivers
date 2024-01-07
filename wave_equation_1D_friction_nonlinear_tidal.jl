@@ -45,6 +45,7 @@ tspan = (tStart, tEnd)
 z⁰ = vcat(ζ⁰, u⁰)
 
 function RHS!(dz, z, p, t)
+    Nx, A, ω, H, g, μ₀, Aₓ = p
     ζ = z[1:Nx+1]
     u = z[Nx+2:end]
     F = (A * sin(ω*t)) .* ones(Nx+1, 1)
@@ -52,7 +53,8 @@ function RHS!(dz, z, p, t)
     dz[Nx+2:end] .= F .- g .* (Aₓ * ζ) .- (μ₀/H) .* u.^3
 end
 
-problem = ODEProblem(RHS!, z⁰, tspan)
+p = (; Nx, A, ω, H, g, μ₀, Aₓ)
+problem = ODEProblem(RHS!, z⁰, tspan, p)
 
 solution = solve(problem, Tsit5())
 
