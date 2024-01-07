@@ -1,26 +1,25 @@
-using LinearAlgebra
-using SparseArrays
-using Plots
-using DifferentialEquations
-using Statistics
-using BenchmarkTools
-using Printf
+# using LinearAlgebra
+# using SparseArrays
+# using Plots
+# using DifferentialEquations
+# using Statistics
+# using BenchmarkTools
+# using Printf
 
-g = 9.80665    # [m/s²]
-H = 0.1        # [m]
-LeftX = 0
-RightX = 1
-tStart = 0
-tEnd = 500
+# g = 9.80665    # [m/s²]
+# H = 0.1        # [m]
+# LeftX = 0
+# RightX = 1
+# tStart = 0
+# tEnd = 500
+# L = RightX - LeftX  # Domain length
+# Δx = 1/100          # Spatial spacing
+# Nx = Int64(L/Δx)    # Number of sub-intervals in space domain
+# μ₀ = 0.001          # Friction parameter -> r = μ₀*u²
+# A = 5               # Amplitude of tidal forcing
+# ω = 5               # Frequency of tidal forcing
 
-L = RightX - LeftX  # Domain length
-Δx = 1/100          # Spatial spacing
-Nx = Int64(L/Δx)    # Number of sub-intervals in space domain
-μ₀ = 0.001          # Friction parameter -> r = μ₀*u²
-A = 5               # Amplitude of tidal forcing
-ω = 5               # Frequency of tidal forcing
-
-x = [j for j in LeftX:Δx:RightX]   # include boundary points
+# x = [j for j in LeftX:Δx:RightX]   # include boundary points
 
 function SystemMatrix(Nx)                           # A
     k = [1.0 for i in 1:Nx]                         # k=1 and k=-1 diagonal array

@@ -1,27 +1,27 @@
-using LinearAlgebra
-using SparseArrays
-using Plots
-using DifferentialEquations
-using Statistics
-using BenchmarkTools
-using Printf
+# using LinearAlgebra
+# using SparseArrays
+# using Plots
+# using DifferentialEquations
+# using Statistics
+# using BenchmarkTools
+# using Printf
 
-g = 9.80665     # [m/s²]
-H = 0.1         # [m]
-LeftX = 0
-RightX = 1
-tStart = 0
-tEnd = 1
+# g = 9.80665     # [m/s²]
+# H = 0.1         # [m]
+# LeftX = 0
+# RightX = 1
+# tStart = 0
+# tEnd = 1
 
-L = RightX - LeftX  # Domain length
-c = sqrt(g*H)       # wave propagation speed
-Δt = 1/200          # time step
-Δx = 1/100          # spatial spacing
-r = c/Δx            # Courant number adjusted
-Nx = Int64(L/Δx)    # number of sub-intervals in space domain
-μ = 0.5             # friction parameter
+# L = RightX - LeftX  # Domain length
+# c = sqrt(g*H)       # wave propagation speed
+# Δt = 1/200          # time step
+# Δx = 1/100          # spatial spacing
+# r = c/Δx            # Courant number adjusted
+# Nx = Int64(L/Δx)    # number of sub-intervals in space domain
+# μ = 0.5             # friction parameter
 
-x = [j for j in LeftX:Δx:RightX]   # include boundary points
+# x = [j for j in LeftX:Δx:RightX]   # include boundary points
 
 function Laplacian1D(Nx, hx)                               # A
     k = [1.0 for i in 1:Nx]                                # k=1 and k=-1 diagonal array

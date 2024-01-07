@@ -1,27 +1,27 @@
-using LinearAlgebra
-using SparseArrays
-using Plots
-using DifferentialEquations
-using BenchmarkTools
-using Printf
+# using LinearAlgebra
+# using SparseArrays
+# using Plots
+# using DifferentialEquations
+# using BenchmarkTools
+# using Printf
 
-g = 9.80665 # [m/s^2]
-H = 0.1 # [m]
-LeftX = 0
-RightX = 1
-tStart = 0
-tEnd = 1
+# g = 9.80665 # [m/s^2]
+# H = 0.1 # [m]
+# LeftX = 0
+# RightX = 1
+# tStart = 0
+# tEnd = 1
 
-T = tEnd - tStart   # Simulation time
-L = RightX - LeftX  # Domain length
-c = sqrt(g*H)       # wave propagation speed
-Δt = 1/200          # time step
-Δx = 1/100          # spatial spacing
-r = c/Δx            # Courant number adjusted
-Nt = Int64(T/Δt)    # number of sub-intervals in time domain
-Nx = Int64(L/Δx)    # number of sub-intervals in space domain
+# T = tEnd - tStart   # Simulation time
+# L = RightX - LeftX  # Domain length
+# c = sqrt(g*H)       # wave propagation speed
+# Δt = 1/200          # time step
+# Δx = 1/100          # spatial spacing
+# r = c/Δx            # Courant number adjusted
+# Nt = Int64(T/Δt)    # number of sub-intervals in time domain
+# Nx = Int64(L/Δx)    # number of sub-intervals in space domain
 
-x = [j for j in LeftX:Δx:RightX]   # include boundary points
+# x = [j for j in LeftX:Δx:RightX]   # include boundary points
 
 function Laplacian1D(Nx, hx)                               # A
     k = [1.0 for i in 1:Nx]                                # k=1 and k=-1 diagonal array
