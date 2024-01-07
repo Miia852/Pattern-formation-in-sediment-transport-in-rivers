@@ -62,6 +62,5 @@ animation = @animate for i in 1:length(t_values)
 end
 
 # Save the animation
-current_directory = @__DIR__
-gif_path = joinpath(current_directory, "animations", "wave_equation_1D_periodic_DE.gif")
-gif(animation, current_directory, fps = 15)
+gif_path = joinpath(@__DIR__, "..", "output", "animations", "wave_equation_1D_periodic_DE.gif")
+gif(animation, gif_path, fps = 15)

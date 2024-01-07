@@ -1,5 +1,9 @@
 using DataFrames, CSV
 using Statistics
+using Plots
+using Printf
+using BenchmarkTools
+using Printf
 
 LeftX = 0
 RightX = 1
@@ -16,8 +20,13 @@ Nx = Int64(L/Δx)    # number of sub-intervals in space domain
 x = [j for j in LeftX:Δx:RightX]   # include boundary points
 t = 0:Δt:T                         # Time values array
 
-numerical = Matrix(CSV.read("wave_1D_numerical_solution.csv", DataFrame))
-reference = Matrix(CSV.read("wave_1D_reference_solution.csv", DataFrame))
+
+numerical_path = joinpath(@__DIR__, "output", "csv", "wave_1D_numerical_solution.csv")
+reference_path = joinpath(@__DIR__, "output", "csv", "wave_1D_reference_solution.csv")
+
+# Read CSV files
+numerical = Matrix(CSV.read(numerical_path, DataFrame))
+reference = Matrix(CSV.read(reference_path, DataFrame))
 
 abs_diff = abs.(numerical .- reference)
 
@@ -35,4 +44,6 @@ animation = @animate for i in 1:Nt+1
 end
 
 # Save the animation
-gif(animation, "solution_comparison.gif", fps = 15)
+output_directory = joinpath(@__DIR__, "output", "images")
+gif_filename = "solution_comparison.gif"
+gif(animation, joinpath(output_directory, gif_filename), fps = 15)

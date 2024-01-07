@@ -13,7 +13,7 @@ function setup()
     end
     
     # List of packages to add
-    packages_to_add = ["LinearAlgebra", "SparseArrays", "Plots", "DifferentialEquations", "BenchmarkTools", "Printf", "Statistics"]
+    packages_to_add = ["LinearAlgebra", "SparseArrays", "Plots", "DifferentialEquations", "BenchmarkTools", "Printf", "Statistics", "InteractiveUtils"]
     
     # Add packages
     for pkg in packages_to_add
@@ -58,27 +58,46 @@ A = 5               # Amplitude of tidal forcing
 
 function simplestModel()
     println("Now running the simplest model...")
-    include("wave_equation_1D_DE.jl")
+    include(joinpath(@__DIR__, "solvers", "wave_equation_1D_DE.jl"))
     println("Finished running the simplest model...")
     println("---------------------------------------------------------------")
 end
 
 function waveEquationFriction()
     println("Now running the model with friction term...")
-    include("wave_equation_1D_friction.jl")
+    include(joinpath(@__DIR__, "solvers", "wave_equation_1D_friction.jl"))
     println("Finished running the model with friction term...")
     println("---------------------------------------------------------------")
 end
 
 function waveEquationNonlinear()
     println("Now running the nonlinear model...")
-    include("wave_equation_1D_friction_nonlinear_tidal.jl")
+    include(joinpath(@__DIR__, "solvers", "wave_equation_1D_friction_nonlinear_tidal.jl"))
     println("Finished running the nonlinear model...")
     println("---------------------------------------------------------------")
 end
 
 # simplestModel()
-waveEquationFriction()
-waveEquationNonlinear()
+# waveEquationFriction()
+# waveEquationNonlinear()
 
+
+using InteractiveUtils
+function check_type_stability(file_path::AbstractString)
+    include(file_path)
+
+    functions = names(Main)
+
+    for func_name in functions
+        if isa(getfield(Main, func_name), Function)
+            code_warntype_result = @code_warntype Main.eval(Expr(:call, Symbol(func_name)))
+
+            println("\nChecking type stability for function: $func_name")
+            display(code_warntype_result)
+        end
+    end
+end
+
+file_path = joinpath(@__DIR__, "solvers", "wave_equation_1D_friction_nonlinear_tidal.jl")
+check_type_stability(file_path)
 
