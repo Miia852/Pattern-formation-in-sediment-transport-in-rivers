@@ -42,7 +42,7 @@ H = 0.1 # [m]
 LeftX = 0
 RightX = 1
 tStart = 0
-tEnd = 500
+tEnd = 10
 T = tEnd - tStart   # Simulation time
 L = RightX - LeftX  # Domain length
 c = sqrt(g*H)       # wave propagation speed
@@ -55,9 +55,9 @@ x = [j for j in LeftX:Δx:RightX]   # include boundary points
 
 ## friction and forcing parameters
 μ = 0.5
-μ₀ = 0.001          # Friction parameter -> r = μ₀*u²
-A = 5               # Amplitude of tidal forcing
-ω = 5               # Frequency of tidal forcing
+μ₀ = 0.5            # Friction parameter amplitude -> r = μ₀*u²
+A = 5               # Amplitude of tidal forcing   -> F = A*sin(ω*t)
+ω = 5               # Frequency of tidal forcing   -> F = A*sin(ω*t)
 
 function simplestModel()
     println("Now running the simplest model...")

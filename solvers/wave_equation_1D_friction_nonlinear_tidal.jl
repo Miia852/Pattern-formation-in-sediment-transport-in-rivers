@@ -21,12 +21,12 @@
 
 # x = [j for j in LeftX:Δx:RightX]   # include boundary points
 
-function SystemMatrix(Nx)                           # A
-    k = [1.0 for i in 1:Nx]                         # k=1 and k=-1 diagonal array
-    A = SparseArrays.spdiagm(-1 => k, 1 => -k)
+function SystemMatrix(Nx, Δx)                       # A
+    k = [1/(2*Δx) for i in 1:Nx]                    # k=1 and k=-1 diagonal array
+    A = SparseArrays.spdiagm(-1 => -k, 1 => k)
 
-    A[1, end] = 1
-    A[end, 1] = -1
+    A[1, end] = -1/(2*Δx)
+    A[end, 1] = 1/(2*Δx)
 
     return A
 end
@@ -35,22 +35,22 @@ println("Friction parameter amplitude: ", μ₀)
 println("Amplitude of the tidal force: ", A)
 println("Frequency of the tidal force: ", ω)
 
-Aₓ = SystemMatrix(Nx)
+Aₓ = SystemMatrix(Nx, Δx)
 
 ### Using DifferentialEquations.jl ###
 ζ⁰ = sin.(π .* x / L)    # ζ(x, t) at t = tStart
 u⁰ = zeros(Nx+1, 1)      # dζ/dt at t = tStart
 tspan = (tStart, tEnd)
 
-z⁰ = vcat(ζ⁰, u⁰)
+z⁰ = vcat(ζ⁰, u⁰)        # combine ζ and u for the ODEProblem
 
 function RHS!(dz, z, p, t)
     Nx, A, ω, H, g, μ₀, Aₓ = p
     ζ = z[1:Nx+1]
     u = z[Nx+2:end]
     F = (A * sin(ω*t)) .* ones(Nx+1, 1)
-    dz[1:Nx+1] .= -H .* (Aₓ * u) 
-    dz[Nx+2:end] .= F .- g .* (Aₓ * ζ) .- (μ₀/H) .* u.^3
+    dz[1:Nx+1] .= -H .* (Aₓ * u)                            # dζ/dt
+    dz[Nx+2:end] .= F .- g .* (Aₓ * ζ) .- (μ₀/H) .* u.^3    # du/dt
 end
 
 p = (; Nx, A, ω, H, g, μ₀, Aₓ)
@@ -80,6 +80,7 @@ function return_extrema(sol, slice_start, slice_end)
 end
 
 ζ_range = return_extrema(solution, 1, Nx+1)
+println("ζ extrema: ", ζ_range)
 
 animation = @animate for i in 1:length(t_values)
     ζₚ = solution.u[i][1:Nx+1]
