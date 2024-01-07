@@ -19,6 +19,9 @@ function setup()
     for pkg in packages_to_add
         add_package(pkg)
     end
+
+    println("All packages installed.")
+    println("-------------------------------------")
 end
 
 
@@ -96,6 +99,8 @@ function check_type_stability(file_path::AbstractString)
             display(code_warntype_result)
         end
     end
+    println("Stability checking finished.")
+    println("--------------------------------------------------------")
 end
 
 file_path = joinpath(@__DIR__, "solvers", "wave_equation_1D_friction_nonlinear_tidal.jl")
