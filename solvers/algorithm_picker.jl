@@ -3,12 +3,11 @@ function run_simulation(run_function, solver)
 end
 
 function makeTable(benchmark::BenchmarkTools.Trial, Nx, Nt, solver)
-    str = replace(string(solver), r"\([^)]*\)" => "")
+    str = split(string(solver), "(")[1]
     
     df = DataFrame(Algorithm = str)
     df.Nx .= Nx
     df.Nt .= Nt
-    # df.Algorithm .= string(Tsit5())
     df.gctimes .= median(benchmark.gctimes)
     df.time .= median(benchmark.times)
     df.memory .= median(benchmark.memory)
@@ -34,8 +33,9 @@ function benchmark(run_func, algorithms)
         end
     end
 
-    output_path = joinpath(@__DIR__, "..", "output", "csv", "benchmark.csv")
+    output_file_name = string(run_func) * "_benchmark.csv"
+    output_path = joinpath(@__DIR__, "..", "output", "csv", output_file_name)
     CSV.write(output_path, combined_df)
-    # println(combined_df)
+    println(combined_df)
 end
 
