@@ -16,6 +16,9 @@ Nx = 100    # number of sub-intervals in space domain
 Δx = L/Nx          # spatial spacing
 r = c/Δx            # Courant number adjusted
 x = [j for j in LeftX:Δx:RightX]   # include boundary points
+algorithms = [Tsit5(), DP5(), RK4(), Vern7(), CVODE_BDF(), Rosenbrock23(), KenCarp4(), Midpoint()]
+
+
 
 ## friction and forcing parameters
 μ = 0.5
@@ -24,5 +27,7 @@ A = 5               # Amplitude of tidal forcing   -> F = A*sin(ω*t)
 ω = 5               # Frequency of tidal forcing   -> F = A*sin(ω*t)
 
 # simplestModel()
-waveEquationFriction()
-waveEquationNonlinear()
+# waveEquationFriction()
+# waveEquationNonlinear()
+
+# benchmark(run_friction, algorithms)
