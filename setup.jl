@@ -40,6 +40,7 @@ using Statistics
 function simplestModel()
     println("Now running the simplest model...")
     include(joinpath(@__DIR__, "solvers", "wave_equation_1D_DE.jl"))
+    run(Tsit5())
     println("Finished running the simplest model...")
     println("---------------------------------------------------------------")
 end
@@ -47,6 +48,7 @@ end
 function waveEquationFriction()
     println("Now running the model with friction term...")
     include(joinpath(@__DIR__, "solvers", "wave_equation_1D_friction.jl"))
+    run_friction(Tsit5())
     println("Finished running the model with friction term...")
     println("---------------------------------------------------------------")
 end
@@ -54,6 +56,7 @@ end
 function waveEquationNonlinear()
     println("Now running the nonlinear model...")
     include(joinpath(@__DIR__, "solvers", "wave_equation_1D_friction_nonlinear_tidal.jl"))
+    run_nonlinear(Tsit5())
     println("Finished running the nonlinear model...")
     println("---------------------------------------------------------------")
 end

@@ -1,4 +1,4 @@
-function run()
+function run(solver)
     function Laplacian1D(Nx, hx)                               # A
         k = [1.0 for i in 1:Nx]                                # k=1 and k=-1 diagonal array
         A = Array(Tridiagonal(k, [-2.0 for i in 1:Nx+1], k))   # excluding 1/Δx^2
@@ -25,7 +25,7 @@ function run()
     
     p = (; r, A)
     problem = SecondOrderODEProblem(RHS!, u⁰, ζ⁰, tspan, p)
-    solution = solve(problem, Tsit5())
+    solution = solve(problem, solver)
     
     t_values = solution.t
     println("Number of nodes in time: ", length(t_values))
@@ -42,5 +42,3 @@ function run()
     gif(animation, gif_path, fps = 15)
     
 end
-
-run()

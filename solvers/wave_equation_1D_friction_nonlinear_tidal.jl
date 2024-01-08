@@ -1,4 +1,4 @@
-function run_nonlinear()
+function run_nonlinear(solver)
     function SystemMatrix(Nx, Δx)                       # A
         k = [1/(2*Δx) for i in 1:Nx]                    # k=1 and k=-1 diagonal array
         A = SparseArrays.spdiagm(-1 => -k, 1 => k)
@@ -34,7 +34,7 @@ function run_nonlinear()
     p = (; Nx, A, ω, H, g, μ₀, Aₓ)
     problem = ODEProblem(RHS!, z⁰, tspan, p)
     
-    solution = solve(problem, Tsit5())
+    solution = solve(problem, solver)
     
     t_values = solution.t
     println("Number of nodes in time: ", length(t_values))
@@ -83,5 +83,3 @@ function run_nonlinear()
     savefig(p2, joinpath(imagePath, "time_steps_bar_nonlinear.png"))
     savefig(p, joinpath(imagePath, "time_steps_scatter_nonlinear.png"))
 end
-
-run_nonlinear()
