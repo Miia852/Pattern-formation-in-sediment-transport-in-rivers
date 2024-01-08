@@ -1,4 +1,6 @@
 function run_nonlinear(solver, make_animation)
+    # H = 5 .* exp.(-abs.(x .- 15)) .- 2 .* exp.(-abs.(x .- 25)) .+ exp.(-abs.(x.-38))
+    
     function SystemMatrix(Nx, Δx)                       # A
         k = [1/(2*Δx) for i in 1:Nx]                    # k=1 and k=-1 diagonal array
         A = SparseArrays.spdiagm(-1 => -k, 1 => k)
@@ -20,22 +22,25 @@ function run_nonlinear(solver, make_animation)
     u⁰ = zeros(Nx+1, 1)      # dζ/dt at t = tStart
     tspan = (tStart, tEnd)
     
-    z⁰ = vcat(ζ⁰, u⁰)        # combine ζ and u for the ODEProblem
+    z⁰ = MVector(ζ⁰..., u⁰...)        # combine ζ and u for the ODEProblem
+
     
     function RHS!(dz, z, p, t)
         Nx, A, ω, H, g, μ₀, Aₓ = p
-        ζ = z[1:Nx+1]
-        u = z[Nx+2:end]
+        ζ = @view z[1:Nx+1]
+        u = @view z[Nx+2:end]
         F = (A * sin(ω*t)) .* ones(Nx+1, 1)
         dz[1:Nx+1] .= -H .* (Aₓ * u)                            # dζ/dt
         dz[Nx+2:end] .= F .- g .* (Aₓ * ζ) .- (μ₀/H) .* u.^3    # du/dt
+        # dz[1:Nx] .= -Aₓ * (H .* u)                            # dζ/dt      
+        # dz[Nx+1:end] .= F .- g .* (Aₓ * ζ) .- μ .* (u./H)   # du/dt
     end
     
     p = (; Nx, A, ω, H, g, μ₀, Aₓ)
     problem = ODEProblem(RHS!, z⁰, tspan, p)
     
     solution = solve(problem, solver)
-    
+
     t_values = solution.t
     println("Number of nodes in time: ", length(t_values))
     

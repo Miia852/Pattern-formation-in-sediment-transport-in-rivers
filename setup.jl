@@ -15,7 +15,8 @@ function setup()
     end
     
     # List of packages to add
-    packages_to_add = ["LinearAlgebra", "SparseArrays", "Plots", "DifferentialEquations", "BenchmarkTools", "Printf", "Statistics", "InteractiveUtils", "Sundials", "DataFrames", "CSV"]
+    packages_to_add = ["LinearAlgebra", "SparseArrays", "Plots", "DifferentialEquations", "BenchmarkTools", "Printf", "Statistics", 
+    "InteractiveUtils", "Sundials", "DataFrames", "CSV", "StaticArrays"]
     
     # Add packages
     for pkg in packages_to_add
@@ -39,6 +40,7 @@ using Statistics
 using Sundials
 using DataFrames
 using CSV
+using StaticArrays
 
 include(joinpath(@__DIR__, "solvers", "wave_equation_1D_DE.jl"))
 include(joinpath(@__DIR__, "solvers", "wave_equation_1D_friction.jl"))
