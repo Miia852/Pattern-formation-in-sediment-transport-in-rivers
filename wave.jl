@@ -7,15 +7,16 @@ using BenchmarkTools
 using Printf
 using StaticArrays
 using Sundials
+using Trapz
 
 g = 9.80665    # [m/s²]
 LeftX = 0
 RightX = 1
 tStart = 0
-tEnd = 50
+tEnd = 100
 
 L = RightX - LeftX  # Domain length
-Δx = 1/200          # Spatial spacing
+Δx = 1/200         # Spatial spacing
 Nx = Int64(L/Δx)    # Number of sub-intervals in space domain
 μ = 0.5             # Friction parameter
 A = 5               # Amplitude of tidal forcing   -> F = A*sin(ω*t)
@@ -52,7 +53,8 @@ Aₓ = SystemMatrix(Nx, Δx)
 
 ### Using DifferentialEquations.jl ###
 # ζ⁰ = sin.(π .* x / L)    # ζ(x, t) at t = tStart
-ζ⁰ = sin.((2*π) .* x / L)    # ζ(x, t) at t = tStart?
+# ζ⁰ = sin.((2*π) .* x / L)    # ζ(x, t) at t = tStart?
+ζ⁰ = sin.(π .* x / L)
 u⁰ = zeros(Nx, 1)        # dζ/dt at t = tStart
 tspan = (tStart, tEnd)
 
@@ -100,6 +102,16 @@ solution = solve(problem, RK4())
 t_values = solution.t
 println("Number of nodes in time: ", length(t_values))
 println("Final time value: ", t_values[end])
+
+## calculate the area under the curve
+ζₚ = solution.u[end][1:Nx]
+area_0 = trapz(x, ζ⁰)
+area_end = trapz(x, ζₚ)
+diff = area_0-area_end
+println("Initial area: $area_0")
+println("Area at the end: $area_end")
+println("Difference: $diff")
+
 
 function return_extrema(sol, slice_start, slice_end)
     sol_max = maximum(sol.u[1][slice_start:slice_end])
