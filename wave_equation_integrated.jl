@@ -3,7 +3,6 @@ include(joinpath(@__DIR__, "setup.jl"))
 ## general parameters
 g = 9.80665 # [m/s^2]
 H = 0.1 # [m]
-# H = 5 .* exp.(-abs.(x .- 15)) .- 2 .* exp.(-abs.(x .- 25)) .+ exp.(-abs.(x.-38))
 LeftX = 0
 RightX = 1
 tStart = 0
@@ -29,7 +28,8 @@ A = 5               # Amplitude of tidal forcing   -> F = A*sin(ω*t)
 
 # simplestModel()
 # waveEquationFriction()
-# waveEquationNonlinear()
+waveEquationNonlinear()
+
 
 # benchmark(run_basic, algorithms)
 # benchmark(run_friction, algorithms)

@@ -16,7 +16,7 @@ tStart = 0
 tEnd = 100
 
 L = RightX - LeftX  # Domain length
-Δx = 1/200         # Spatial spacing
+Δx = 1/20         # Spatial spacing
 Nx = Int64(L/Δx)    # Number of sub-intervals in space domain
 μ = 0.5             # Friction parameter
 A = 5               # Amplitude of tidal forcing   -> F = A*sin(ω*t)
@@ -54,7 +54,8 @@ Aₓ = SystemMatrix(Nx, Δx)
 ### Using DifferentialEquations.jl ###
 # ζ⁰ = sin.(π .* x / L)    # ζ(x, t) at t = tStart
 # ζ⁰ = sin.((2*π) .* x / L)    # ζ(x, t) at t = tStart?
-ζ⁰ = sin.(π .* x / L)
+ζ⁰ = 0.005 .* sin.((2*π) .* x / L)    # ζ(x, t) at t = tStart
+# ζ⁰ = sin.(π .* x / L)
 u⁰ = zeros(Nx, 1)        # dζ/dt at t = tStart
 tspan = (tStart, tEnd)
 
@@ -138,18 +139,17 @@ println("ζ extrema: ", ζ_range)
 Δt_array = collect(t_values[i+1]-t_values[i] for i in 1:length(t_values)-1)
 println("Mean time step size: ", mean(Δt_array))
 
-step = 5
+step = 10
 
-animation = @animate for i in 1:step:length(t_values)
+animation = @animate for i in 1:step:length(t_values)freq, power = periodogram(data)
     uₚ = solution.u[i][Nx+1:end]
     formatted_t = @sprintf("%.8f", solution.t[i])
     
-    plot(x, uₚ, ylims = u_range, xlabel = "x", ylabel = "ζ", title = "Time: $formatted_t [s]", legend = false)
+    plot(x, uₚ, ylims = u_range, xlabel = "x", ylabel = "u", title = "Time: $formatted_t [s]", legend = false)
 end
 
 ## calculating framesPerSecond to make the animation consistent with real time
 frames = floor(length(collect(1:step:length(t_values)))/tEnd)
-
 gif(animation, "test_u.gif", fps = frames)
 
 animation1 = @animate for i in 1:step:length(t_values)
